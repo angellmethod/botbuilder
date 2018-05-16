@@ -16,6 +16,8 @@ const options = {
     json: true // Automatically parses the JSON string in the response
 };
 
+
+/*Continue with bot setup and code*/
 const server = restify.createServer();
 
 server.listen(process.env.port | process.env.PORT | 3978, () => {
@@ -43,7 +45,7 @@ server.post('/api/messages', (req,res) => {
                 await context.sendActivity(`What is the github user ID you want to see repos for?`);
             } else if (state.prompt === 'githubId') {
                 user.githubId = context.activity.text;
-                await context.sendActivity(`Thanks, I'll use ${user.githubId} as your github Id.`).then( () => options.uri = "https://api.github.com/users/" + user.githubId + "/repos").catch( (err) => {console.log(err);});
+                await context.sendActivity(`Thanks, I'll use ${user.githubId} as your github Id.`).then( () => options.uri = "https://api.github.com/users/" + user.githubId + "/repos")
                 await rp(options)
                 .then(function (repos) {
                     let data = new Array();
@@ -52,13 +54,12 @@ server.post('/api/messages', (req,res) => {
                         //console.log(e.name);
                     });
                     user.repos = data;
-//                    context.sendActivity(data.toString()).catch( (e) => console.log(e));
                 }) 
                 .catch( (err) => {
                     // API call failed...
                     console.log(err);
                 });
-                await context.sendActivity(user.repos.toString()).catch( (err) => {console.log(err);});;
+                await context.sendActivity(user.repos.toString())
                 state.prompt = "reposReturned";
             } else if (state.prompt === "reposReturned") {
                 console.log(user);
